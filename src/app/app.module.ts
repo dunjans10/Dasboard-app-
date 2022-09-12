@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
@@ -10,7 +10,14 @@ import { MaterialModule } from './material/material.module';
 
 import { NavbarComponent } from './core/navbar/navbar.component';
 import { OverviewComponent } from './core/overview/overview.component';
+import { AuthUiService } from './auth/shared/services/auth-ui.service';
+import { firstValueFrom } from 'rxjs';
 
+export function initializeApp1(appInitService: AuthUiService) {
+  return (): Promise<any> => { 
+    return firstValueFrom(appInitService.reinitSession())
+  }
+}
 
 @NgModule({
   declarations: [
@@ -26,7 +33,13 @@ import { OverviewComponent } from './core/overview/overview.component';
     RouterModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [AuthUiService, 
+    {
+    provide: APP_INITIALIZER,
+    useFactory: initializeApp1,
+    deps: [AuthUiService],
+    multi: true
+}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

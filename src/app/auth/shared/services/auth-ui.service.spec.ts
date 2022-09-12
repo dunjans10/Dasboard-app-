@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthUiService } from './shared/auth-ui.service';
+import { AuthUiService } from './auth-ui.service';
 
 describe('AuthUiService', () => {
   let service: AuthUiService;

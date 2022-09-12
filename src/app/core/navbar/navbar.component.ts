@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { User } from 'src/app/auth/models/user';
-import { AuthUiService } from 'src/app/auth/shared/auth-ui.service';
+import { AuthUiService } from 'src/app/auth/shared/services/auth-ui.service';
 
 @Component({
   selector: 'app-navbar',

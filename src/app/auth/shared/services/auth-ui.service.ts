@@ -1,10 +1,12 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable} from 'rxjs';
+
+import { BehaviorSubject, observable, Observable, of} from 'rxjs';
 import { tap, map } from 'rxjs/operators'
-import { Login } from '../models/login';
-import { IUser, User } from '../models/user';
+
+import { Login } from '../../models/login';
+import { IUser, User } from '../../models/user';
 
 const apiUrl:string='https://integration4.wolkabout.com';
 
@@ -33,56 +35,82 @@ export class AuthUiService {
   private refreshToken = new BehaviorSubject<string | null>(null);
   refreshToken$ = this.refreshToken.asObservable();
 
-  private isUserLogIn = new BehaviorSubject<boolean>(false);
-  isUserLogIn$ = this.isUserLogIn.asObservable();
 
-  constructor(private http: HttpClient, private router:Router) {
+  private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
+  loginStatus$ = this.loginStatus.asObservable();
 
-    const refreshToken =  localStorage.getItem(this.REFRESH_TOKEN_KEY);
-    if(refreshToken){
-      this.reinitSession(refreshToken)
-    }
-  }
+  redirectUrl!: string;
 
+  constructor(private http: HttpClient, private router:Router) {}
+ 
   login(user:Login):Observable<IUser> {
     
       return this.http.post<IUser>(`${apiUrl}/api/emailSignIn`, user, httpOptions).pipe(
           tap(this.handleResponse)     
     )}
 
+  logout(){  
+    
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.setItem('loginStatus', '0');
+    this.userSubject.next(null);
+    this.refreshToken.next(null);
+    this.accessToken.next(null);
+    }
 
+ 
   isAuthenticated():Observable<boolean> {
     
     return this.userSubject.pipe(
       map((data)=> {
         const userAuth = !!data
         console.log('user auth', userAuth)
+ 
         return userAuth;
+      
       })
     )
    }
-  
-    
-    //user = null
-    // remove user, token from local storage to log user out
-    logout(){  
-    
-      localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-      this.userSubject.next(null);
-      this.refreshToken.next(null);
-      this.accessToken.next(null);
+
+  checkLoginStatus():boolean {
+
+    let loginStatus = localStorage.getItem("loginStatus")
+      if(loginStatus == "1"){
+        return true;
+      }
+      return false;
+    }
+
+  get isLoggedIn (){
+      return this.loginStatus;
     }
  
-    reinitSession(refreshToken: string) {
+
+  reinitSession(refreshToken?: string) {
+
+   let fromStorage = "";
+    
+      if(!refreshToken){
       
-      return this.http.post<IUser>(`${apiUrl}/api/refreshToken`, refreshToken).pipe
-          (tap(this.handleResponse))
+        fromStorage = localStorage.getItem(this.REFRESH_TOKEN_KEY) ?? "";
+        if(!fromStorage){
+          this.logout();
+          return of(null)
+          
         }
 
-    private handleResponse =  (user:IUser) => {
+      }
+      console.log('Refresh token',refreshToken);
+      console.log('From storage', fromStorage)
+      return this.http.put<IUser>(`${apiUrl}/api/refreshToken`, refreshToken ?? fromStorage).pipe
+          (tap(this.handleResponse))
+   }
+
+  
+  private handleResponse =  (user:IUser) => {
         // login successful if there is a token in the response
      if(user && user.refreshToken){   
-
+        localStorage.setItem('loginStatus', '1');
         const refreshToken = user.refreshToken;
         localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken)
       

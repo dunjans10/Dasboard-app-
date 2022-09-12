@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthUiService } from 'src/app/auth/shared/auth-ui.service';
+import { AuthUiService } from 'src/app/auth/shared/services/auth-ui.service';
 
 @Component({
   selector: 'app-login',
@@ -47,6 +47,10 @@ export class LoginComponent implements OnInit {
         
         })
     }
+    else{
+      this.router.navigate(['/login'])
+    }
+   
   }
 
   cancel(){
