@@ -19,12 +19,17 @@ export class UserIsLogin implements CanActivate {
         map (data => {
           if(!data){
             this.router.navigate(['/login'])
+
             return false;
           }   
-         
+      
           return true;
       }))
+
+   
     }
+
+  
 
 
     /*checkLoggedIn():boolean{

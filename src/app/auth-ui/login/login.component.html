@@ -1,21 +1,32 @@
 
-<div class="form-container mat-elevation-z5">
-    <h1>Login</h1>
-    <form [formGroup]="loginForm" (ngSubmit)="submitForm()">
-        <mat-form-field appearance="outline">
-            <mat-label>Username</mat-label>
-            <input matInput placeholder="Username..." formControlName="username">
-            <mat-error *ngIf="loginForm.controls['username'].hasError('required')">Username is required!</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input matInput placeholder="Password..." formControlName="password">
-            <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Password is required!</mat-error>
-        </mat-form-field>
-
-        <div class="btn-container">
-            <button mat-raised-button color="primary" class="btn-login" [disabled]="loginForm.invalid">Login</button>
-            <button mat-raised-button (click)="cancel()">Cancel</button>
+<div class="wrapper">
+        <div class="form-container mat-elevation-z5">
+            <div class="img-wrapper">
+                <img src='/assets/computer.jpg' alt="Login_photo">
+                <p class="copyright">&copy; {{date.getFullYear()}} WolkAbout</p>
+            </div>
+            <div class="form-wrapper">
+            <h1>Welcome Back!</h1>
+            <p><u>Sign in! </u></p>
+            <form [formGroup]="loginForm" (ngSubmit)="submitForm()">
+                
+                <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <input matInput placeholder="Username..." formControlName="username">
+                    <mat-error *ngIf="loginForm.controls['username'].hasError('required')">Username is required!</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input type="password" matInput placeholder="Password..." formControlName="password">
+                    <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Password is required!</mat-error>
+                </mat-form-field>
+        
+                <div class="btn-container">
+                    <button mat-raised-button color="primary" class="btn-login" [disabled]="loginForm.invalid">Login</button>
+                </div>
+            </form>
         </div>
-    </form>
+    
+    </div>
+
 </div>

@@ -6,6 +6,7 @@ import { MaterialModule } from 'src/app/material/material.module';
 
 import { LoginComponent } from 'src/app/auth-ui/login/login.component';
 
+
 const routes: Routes = [
     { path: '', component: LoginComponent }
   ];

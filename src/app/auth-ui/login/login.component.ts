@@ -11,10 +11,12 @@ import { AuthUiService } from 'src/app/auth/shared/services/auth-ui.service';
 export class LoginComponent implements OnInit {
 
   loginForm!:FormGroup;
-  isLoggedIn:boolean = false;
+  date:Date = new Date();
   error:string = '';
-
-  constructor(private fb:FormBuilder, private router:Router, private authService:AuthUiService) { }
+ 
+  constructor(private fb:FormBuilder, private router:Router, private authService:AuthUiService) { 
+ 
+  }
 
   ngOnInit(): void {
     this.createForm(); 
@@ -40,22 +42,20 @@ export class LoginComponent implements OnInit {
       this.authService.login(val).subscribe({
           next: () => {
           console.log('User is logged in')
-          alert('success')
-          this.router.navigate(['/overview'])
+          this.router.navigate(['/shell'])
+        
           },
           error:(err) => this.error = err,
         
         })
+
+      
     }
-    else{
-      this.router.navigate(['/login'])
-    }
-   
   }
 
-  cancel(){
+  /*cancel(){
     this.router.navigate(['/'])
-  }
+  }*/
   
 
 }

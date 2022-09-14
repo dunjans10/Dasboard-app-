@@ -6,13 +6,14 @@ import { AuthUiService } from './auth/shared/services/auth-ui.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
  
   title = 'dashboard';
 
   constructor(private authService:AuthUiService){}
 
-  ngOnInit(): void {
-    this.authService.isAuthenticated();
-  }
+
+  isUserAuth = this.authService.isAuthenticated()
+
+ 
 }

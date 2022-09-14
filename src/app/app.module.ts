@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule} from '@angular/common/http';
-import { MaterialModule } from './material/material.module';
 
-import { NavbarComponent } from './core/navbar/navbar.component';
-import { OverviewComponent } from './core/overview/overview.component';
+
 import { AuthUiService } from './auth/shared/services/auth-ui.service';
 import { firstValueFrom } from 'rxjs';
+
+
+
+
 
 export function initializeApp1(appInitService: AuthUiService) {
   return (): Promise<any> => { 
@@ -22,14 +24,11 @@ export function initializeApp1(appInitService: AuthUiService) {
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
-    OverviewComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule,
     RouterModule,
     HttpClientModule
   ],

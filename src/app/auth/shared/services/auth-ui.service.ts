@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, observable, Observable, of} from 'rxjs';
-import { tap, map } from 'rxjs/operators'
+import { tap, map, ignoreElements } from 'rxjs/operators'
 
 import { Login } from '../../models/login';
 import { IUser, User } from '../../models/user';
 
 const apiUrl:string='https://integration4.wolkabout.com';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -36,12 +37,11 @@ export class AuthUiService {
   refreshToken$ = this.refreshToken.asObservable();
 
 
-  private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
-  loginStatus$ = this.loginStatus.asObservable();
-
   redirectUrl!: string;
 
-  constructor(private http: HttpClient, private router:Router) {}
+  constructor(private http: HttpClient, private router:Router) {
+  
+  }
  
   login(user:Login):Observable<IUser> {
     
@@ -52,7 +52,6 @@ export class AuthUiService {
   logout(){  
     
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    localStorage.setItem('loginStatus', '0');
     this.userSubject.next(null);
     this.refreshToken.next(null);
     this.accessToken.next(null);
@@ -68,40 +67,25 @@ export class AuthUiService {
  
         return userAuth;
       
-      })
-    )
+        })
+      )
    }
-
-  checkLoginStatus():boolean {
-
-    let loginStatus = localStorage.getItem("loginStatus")
-      if(loginStatus == "1"){
-        return true;
-      }
-      return false;
-    }
-
-  get isLoggedIn (){
-      return this.loginStatus;
-    }
- 
 
   reinitSession(refreshToken?: string) {
 
    let fromStorage = "";
     
       if(!refreshToken){
-      
-        fromStorage = localStorage.getItem(this.REFRESH_TOKEN_KEY) ?? "";
-        if(!fromStorage){
-          this.logout();
-          return of(null)
-          
+         fromStorage = localStorage.getItem(this.REFRESH_TOKEN_KEY) ?? "";
+          if(!fromStorage){
+            this.logout();
+            return of(null)    
         }
-
       }
+
       console.log('Refresh token',refreshToken);
       console.log('From storage', fromStorage)
+
       return this.http.put<IUser>(`${apiUrl}/api/refreshToken`, refreshToken ?? fromStorage).pipe
           (tap(this.handleResponse))
    }
@@ -109,18 +93,16 @@ export class AuthUiService {
   
   private handleResponse =  (user:IUser) => {
         // login successful if there is a token in the response
-     if(user && user.refreshToken){   
-        localStorage.setItem('loginStatus', '1');
+     if(user && user.refreshToken){  
+
         const refreshToken = user.refreshToken;
         localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken)
-      
         this.userSubject.next(user.user);
         
-        console.log(user)
+        console.log(user.user)
     
         this.accessToken.next(user.accessList[0].accessToken);
-        this.refreshToken.next(user.refreshToken);
-        
+        this.refreshToken.next(user.refreshToken);  
      } 
-    }
+    }                           
 }
