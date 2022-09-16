@@ -18,7 +18,7 @@ export class UserIsNotLogin implements CanActivate {
         map(data => {
           
           if(data){
-            this.router.navigate(['/shell'])
+            this.router.navigate(['/apps'])
             
           }
           return !data;

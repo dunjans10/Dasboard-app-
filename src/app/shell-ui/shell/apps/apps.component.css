@@ -22,7 +22,7 @@ h1{
 }
 
 .icon {
-    border:1px solid red;
+   
     display: flex;
     flex-direction: column;
     gap:15px;
@@ -32,10 +32,14 @@ h1{
     width: 150px;
     height: 130px;
     cursor: pointer;
-  
-   
 }
 
+.icon:hover{
+    color:#3f51b5;
+    text-decoration: underline;
+    font-weight: bold;
+  
+}
 mat-icon {
     color: pink;
     background-color: #3f51b5;
@@ -47,4 +51,9 @@ mat-icon {
     justify-content: center;
     align-items: center;
 
+}
+
+mat-icon:hover{
+    color: white;
+  
 }

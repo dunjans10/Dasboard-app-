@@ -13,8 +13,6 @@ import { firstValueFrom } from 'rxjs';
 
 
 
-
-
 export function initializeApp1(appInitService: AuthUiService) {
   return (): Promise<any> => { 
     return firstValueFrom(appInitService.reinitSession())
@@ -24,13 +22,15 @@ export function initializeApp1(appInitService: AuthUiService) {
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+  
   ],
   providers: [AuthUiService, 
     {

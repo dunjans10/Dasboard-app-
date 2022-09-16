@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(val).subscribe({
           next: () => {
           console.log('User is logged in')
-          this.router.navigate(['/shell'])
+          this.router.navigate(['/apps'])
         
           },
           error:(err) => this.error = err,

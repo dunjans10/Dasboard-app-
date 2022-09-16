@@ -85,6 +85,7 @@ export class AuthUiService {
 
       console.log('Refresh token',refreshToken);
       console.log('From storage', fromStorage)
+   
 
       return this.http.put<IUser>(`${apiUrl}/api/refreshToken`, refreshToken ?? fromStorage).pipe
           (tap(this.handleResponse))
@@ -100,7 +101,7 @@ export class AuthUiService {
         this.userSubject.next(user.user);
         
         console.log(user.user)
-    
+        console.log(user.accessList[0].accessToken)
         this.accessToken.next(user.accessList[0].accessToken);
         this.refreshToken.next(user.refreshToken);  
      } 
