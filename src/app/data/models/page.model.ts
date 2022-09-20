@@ -1,28 +1,31 @@
+
 export interface Page<ContentType> {
-    content:ContentType[];
-    "pageable": {
-        "sort": {
-          "sorted": "Boolean",
-          "unsorted": "Boolean",
-          "empty": "Boolean"
-        },
-        "pageNumber": "Number",
-        "pageSize": "Number",
-        "offset": "Number",
-        "paged": "Boolean",
-        "unpaged": "Boolean"
-      },
-      "totalPages": "Number",
-      "totalElements": "Number",
-      "last": "Boolean",
-      "size": "Number",
-      "number": "Number",
-      "sort": {
-        "sorted": "Boolean",
-        "unsorted": "Boolean",
-        "empty": "Boolean"
-      },
-      "first": "Boolean",
-      "numberOfElements": "Number",
-      "empty": "Boolean"
+  content:ContentType[];
+  pageable: Pageable;
+  totalPages:number;
+  totalElements:number;
+  last:boolean;
+  size:number;
+  number:number;
+  sort:Sort;
+  first:boolean;
+  numberOfElements:number;
+  empty:boolean;
+  
 }
+
+ 
+  export interface Pageable {
+  sort:Sort;
+  pageNumber:number;
+  pageSize:number;
+  offset:number;
+  paged:boolean;
+  unpaged:boolean;
+  }
+  
+  interface Sort {
+  sorted:boolean;
+  unsorted:boolean;
+  empty:boolean;
+  }

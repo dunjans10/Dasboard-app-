@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule}  from '@angular/material/input'; 
 import { MatMenuModule } from '@angular/material/menu'; 
 import { MatPaginatorModule } from '@angular/material/paginator'; 
+import { MatSortModule } from '@angular/material/sort'; 
 import { MatTableModule } from '@angular/material/table'; 
 import { MatToolbarModule } from '@angular/material/toolbar'; 
 
@@ -16,6 +17,7 @@ const MaterialComponents = [
   MatInputModule,
   MatMenuModule,
   MatPaginatorModule,
+  MatSortModule,
   MatTableModule,
   MatToolbarModule
 ]
