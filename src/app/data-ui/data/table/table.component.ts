@@ -1,12 +1,13 @@
 
-import { Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, OnInit, ViewChild } from '@angular/core';
+//import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 
 import { Semantic } from 'src/app/data/models/semantic.model';
 import { SemanticService } from 'src/app/data/services/semantic.service';
+import { DataViewModel } from './table.view-model';
 
 @Component({
   selector: 'app-table',
@@ -14,51 +15,68 @@ import { SemanticService } from 'src/app/data/services/semantic.service';
   styleUrls: ['./table.component.css']
 })
 
-export class TableComponent implements OnInit, AfterViewInit {
+export class TableComponent implements OnInit{
 
   displayedColumns: string[] = ['name', 'guid', 'path','actions'];
-  dataSource!: MatTableDataSource<Semantic>;
-  @ViewChild(MatPaginator) paginator!:MatPaginator;
-  @ViewChild(MatSort) sort!:MatSort;
-  data!:any;
-  
-  constructor(private router:Router, private semanticService:SemanticService) { }
+  dataSource!:Semantic[];
 
- 
+  constructor(private router:Router, private semanticService:SemanticService, private dataService:DataViewModel) { }
+
   ngOnInit(): void {
     this.getSemantics();
     
+    
   }
-  ngAfterViewInit(): void {
-    this.getSemantics()
-  }
-
-
-  getSemantics(){
-    this.semanticService.getSemantics().subscribe(
-      (results:any) => {
-        console.log(results)
-        this.data = results.content;
-        this.dataSource = new MatTableDataSource(this.data);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      }
-    )
+ getSemantics(){
+      this.dataService.fetchData$.subscribe(
+        (results:any) => {
+          console.log(results.content)
+          this.dataSource = results.content;
+        }
+      )
   }
 
-  applyFilter(event:Event){
-    const filterValue =( event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase()
-   }
+  onChangePage(page:PageEvent){
+    this.dataService.pageChange()
 
+    //prosledim page iz event-a
+
+    
+  }
+
+  //onSortChange(sort:SortE)
+
+
+  /*sortChange(sort:string){
+
+    if(this.params.sort === sort){
+      this.params.sortDirection = 'asc' ? 'desc':'asc';
+      this.isAscendingSort= true
+      this.isAscendingSort = !this.isAscendingSort;
+    }else{
+      this.params.sort = sort;
+      this.params.sortDirection = 'asc'
+      this.isAscendingSort = false
+    }
+    this.getAll();
+  }*/
 
  deleteSemantic(semanticId:number) {
     this.semanticService.deleteSemantic(semanticId)
     .subscribe(
-     () => this.getSemantics(),
+  //   () => this.getSemantics(),
     )
   }
 
+
+
+  /*onSortClick(sort:Sort){
+    this.dataService.sortChange(sort)
+  }
+*/
+
+
+  
   backToApps(){
     this.router.navigate(['/apps'])
   }

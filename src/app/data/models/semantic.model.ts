@@ -1,4 +1,5 @@
 export interface Semantic {
+
     id:number;
     name:string;
     guid:string;

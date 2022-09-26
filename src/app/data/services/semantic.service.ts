@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, switchMap} from 'rxjs';
+import { Observable, switchMap, tap} from 'rxjs';
 import { AuthUiService } from 'src/app/auth/shared/services/auth-ui.service';
 import { Page } from '../models/page.model';
 import { Semantic } from '../models/semantic.model';
@@ -12,32 +12,34 @@ const apiUrl:string='https://integration4.wolkabout.com';
 })
 export class SemanticService {
 
- /* headers: HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Accept': 'application/vnd.page+json',
-    Authorization:
-      'Bearer ${accessToken}',
-  });*/
-  
   constructor(private http:HttpClient, private authService:AuthUiService) { }
 
-  getSemantics():Observable<Page<Semantic>>{
+  getSemantics(params?:any):Observable<Page<Semantic[]>>{
+
+      params = {
+        params:new HttpParams()
+
+        .set('sort', params.sort ? params.sortDirection : "")
+        //.set('sortDirection', params.sortDirection || "")
+        .set('page', params?.page || "")
+        .set('size', params?.pageSize || "")
+      }
+
 
     return this.authService.accessToken$.pipe(
       switchMap(accessToken => {
+        
         const headers: HttpHeaders = new HttpHeaders({
           'Content-Type': 'application/json',
           'Accept': 'application/vnd.page+json',
           Authorization: `Bearer ${accessToken}`
         })
-        return this.http.get<Page<Semantic>>(`${apiUrl}/api/semantics`, {headers}).pipe(
-          map((data:Page<Semantic>) =>{
-            return data;
-          } 
-          )
-        )
+
+        return this.http.get<Page<Semantic[]>>(`${apiUrl}/api/semantics`, {headers, params}).pipe(
+          tap(data => console.log(JSON.stringify(data)))
+          )    
       })
-    ) 
+    )
   }
 
   deleteSemantic(semanticId:number):Observable<void> {

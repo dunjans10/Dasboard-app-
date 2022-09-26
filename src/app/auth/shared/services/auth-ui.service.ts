@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, observable, Observable, of} from 'rxjs';
-import { tap, map, ignoreElements } from 'rxjs/operators'
+import { BehaviorSubject, Observable, of} from 'rxjs';
+import { tap, map } from 'rxjs/operators'
 
 import { Login } from '../../models/login';
 import { IUser, User } from '../../models/user';

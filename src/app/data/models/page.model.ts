@@ -1,5 +1,7 @@
 
 export interface Page<ContentType> {
+  
+
   content:ContentType[];
   pageable: Pageable;
   totalPages:number;
@@ -24,7 +26,7 @@ export interface Page<ContentType> {
   unpaged:boolean;
   }
   
-  interface Sort {
+  export interface Sort {
   sorted:boolean;
   unsorted:boolean;
   empty:boolean;

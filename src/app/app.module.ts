@@ -10,6 +10,10 @@ import { HttpClientModule} from '@angular/common/http';
 
 import { AuthUiService } from './auth/shared/services/auth-ui.service';
 import { firstValueFrom } from 'rxjs';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreModule } from '@ngrx/store';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 
 
@@ -30,6 +34,9 @@ export function initializeApp1(appInitService: AuthUiService) {
     BrowserAnimationsModule,
     RouterModule,
     HttpClientModule,
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([])
   
   ],
   providers: [AuthUiService, 
