@@ -1,11 +1,12 @@
 import { PageParams, SortParams } from "src/app/data/services/http-models/request-models";
+import { SemanticFilter } from "src/app/data/services/semantic.service";
 
 export interface DataState {
   sort: SortParams;
   page:PageParams;
+  filter:SemanticFilter;
   }
 
- 
 export const initialState:DataState = {
     sort: {
         direction: 'asc',
@@ -14,6 +15,9 @@ export const initialState:DataState = {
     page: {
         page:1,
         pageSize:5
+    },
+    filter:{
+        query:''
     }
 
 }

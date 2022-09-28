@@ -1,11 +1,10 @@
-import { ContentChild, Injectable, OnDestroy} from '@angular/core';
+import { Injectable, OnDestroy} from '@angular/core';
 import { State, Store } from '@ngrx/store';
-import { SemanticService } from 'src/app/data/services/semantic.service';
-import { DataState } from '../state/data.state';
+import { SemanticFilter, SemanticService } from 'src/app/data/services/semantic.service';
+import { DataState} from '../state/data.state';
 import * as dataTableActions from '../state/data.actions'
-import { BehaviorSubject, combineLatest, map, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { selectPage, selectSort } from '../state/data.selectors';
-import { Semantic } from 'src/app/data/models/semantic.model';
+import { BehaviorSubject, combineLatest, filter, map, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { selectFilter, selectPage, selectSort } from '../state/data.selectors';
 import { PageParams, SortParams } from 'src/app/data/services/http-models/request-models';
 
 @Injectable({
@@ -17,6 +16,7 @@ import { PageParams, SortParams } from 'src/app/data/services/http-models/reques
 export class DataViewModel implements OnDestroy {
 
   private destroyed$ =new Subject<void>();
+
   private pageSubject = new BehaviorSubject({
     page:0,
     pageSize:0,
@@ -24,26 +24,22 @@ export class DataViewModel implements OnDestroy {
   });
   pageSubject$ = this.pageSubject.asObservable();
 
-  private sortSubject = new BehaviorSubject({
-    direction:'',
-    field:''
-  });
-  sortSubject$ = this.sortSubject.asObservable();
-
-
   page$ = this.store.select(selectPage);
   sort$ = this.store.select(selectSort);
+  filter$ = this.store.select(selectFilter);
 
   constructor(private semanticService:SemanticService, private store:Store<State<DataState>>){}
 
   fetchData$ = combineLatest([
       this.page$, 
-      this.sort$
+      this.sort$,
+      this.filter$
     ]).pipe(
 
     takeUntil(this.destroyed$),
-    switchMap(([page, sort]) => {
-      return this.semanticService.getSemantics({...page, ...sort});
+    switchMap(([page, sort, filter]) => {
+  
+      return this.semanticService.getSemantics({...page, ...sort, ...filter});
     }),
 
     tap(data => { 
@@ -75,6 +71,10 @@ export class DataViewModel implements OnDestroy {
   
   pageChange(page:PageParams){
     this.store.dispatch(dataTableActions.setPage({payload:page}))
+  }
+
+  filterChange(filter:SemanticFilter){
+    this.store.dispatch(dataTableActions.setFilterBy({payload:filter}))
   }
 }
 

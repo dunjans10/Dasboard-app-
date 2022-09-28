@@ -24,14 +24,16 @@ export class TableComponent implements OnInit{
   dataSource$ = this.dataService.fetchData$;
   pageEvent!:PageEvent;
 
+
   vm$ = combineLatest([
     this.dataSource$,
     this.dataService.page$,
-    this.dataService.sort$
+    this.dataService.sort$,
+    this.dataService.filter$
    ]).pipe(
         filter((dataSemantics) => Boolean(dataSemantics)), //check 
-        map(([semantics, semanticPage, semanticSort]) =>
-          ({semantics, semanticPage,semanticSort}))
+        map(([semantics, semanticPage, semanticSort, semanticFilter]) =>
+          ({semantics, semanticPage,semanticSort, semanticFilter}))
         )
  
 
@@ -44,14 +46,6 @@ export class TableComponent implements OnInit{
     this.getData()
   }
 
- /* applyFilter(searchName:string) {
-    return this.dataSource$.pipe(
-      map((data: Semantic[]) => data.filter(item => item.name = searchName.trim().toLowerCase()))
-      ).subscribe(
-        (response) =>  console.log(response),
-  )
-  
-}*/
 
   getData(){
     this.semanticService.getSemantics().subscribe(
@@ -76,7 +70,7 @@ export class TableComponent implements OnInit{
 
   onChangeSort(event:Sort){
 
-    let direction = event.direction;
+    let direction = event.direction; //'asc' | 'desc' | ''
     let field = event.active;
     
     console.log(direction);
@@ -84,6 +78,16 @@ export class TableComponent implements OnInit{
 
     this.dataService.sortChange({direction, field})
   }
+
+  applyFilter(event:Event){
+
+    console.log(event);
+
+    let query = (event.target as HTMLInputElement).value;
+  
+    this.dataService.filterChange({query})
+  }
+
 
 
  deleteSemantic(semanticId:number) {

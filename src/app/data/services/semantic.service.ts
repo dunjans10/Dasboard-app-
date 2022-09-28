@@ -26,7 +26,8 @@ export class SemanticService {
       const queryParams = new HttpParams()
         .set('sort', params?.field ? `${params.field},${params.direction}` : "")
         .set('page', params?.page ?? "")
-        .set('size', params?.pageSize ?? "");
+        .set('size', params?.pageSize ?? "")
+        .set('query', params?.query ?? "")
       
 
 

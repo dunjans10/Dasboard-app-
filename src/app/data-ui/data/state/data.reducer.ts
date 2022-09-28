@@ -24,6 +24,14 @@ export const dataTableReducer = createReducer<DataState>(
             page: data
         }
     }),
+    on(DataTableActions.setFilterBy,(state, {payload:data})=>{
+        console.log('Original state' + JSON.stringify(state.filter))
+
+        return {
+            ...state, 
+            filter:data
+        }
+    })
 )
 
 export function DataTableReducer(state:DataState, action:Action){

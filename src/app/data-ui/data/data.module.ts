@@ -8,7 +8,7 @@ import { TableComponent } from './table/table.component';
 import * as dataReducer from './state/data.reducer';
 
 const routes:Routes = [
-  
+    
     {path:'table', component:TableComponent},
     {path:'**', redirectTo:'table'}
   
