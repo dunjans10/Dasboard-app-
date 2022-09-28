@@ -1,13 +1,14 @@
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-//import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort} from '@angular/material/sort';
+import { Component, OnInit} from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-
+import { combineLatest, filter, map } from 'rxjs';
+import { Page } from 'src/app/data/models/page.model';
 import { Semantic } from 'src/app/data/models/semantic.model';
 import { SemanticService } from 'src/app/data/services/semantic.service';
 import { DataViewModel } from './table.view-model';
+
 
 @Component({
   selector: 'app-table',
@@ -18,48 +19,72 @@ import { DataViewModel } from './table.view-model';
 export class TableComponent implements OnInit{
 
   displayedColumns: string[] = ['name', 'guid', 'path','actions'];
-  dataSource!:Semantic[];
+  dataSourcePage!:Page<Semantic>;
 
-  constructor(private router:Router, private semanticService:SemanticService, private dataService:DataViewModel) { }
+  dataSource$ = this.dataService.fetchData$;
+  pageEvent!:PageEvent;
+
+  vm$ = combineLatest([
+    this.dataSource$,
+    this.dataService.page$,
+    this.dataService.sort$
+   ]).pipe(
+        filter((dataSemantics) => Boolean(dataSemantics)), //check 
+        map(([semantics, semanticPage, semanticSort]) =>
+          ({semantics, semanticPage,semanticSort}))
+        )
+ 
+
+  constructor(private router:Router, private semanticService:SemanticService, private dataService:DataViewModel) {
+
+    //this.dataSource$ = dataService.fetchData$
+   }
 
   ngOnInit(): void {
-    this.getSemantics();
-    
-    
-  }
- getSemantics(){
-      this.dataService.fetchData$.subscribe(
-        (results:any) => {
-          console.log(results.content)
-          this.dataSource = results.content;
-        }
-      )
+    this.getData()
   }
 
-  onChangePage(page:PageEvent){
-    this.dataService.pageChange()
+ /* applyFilter(searchName:string) {
+    return this.dataSource$.pipe(
+      map((data: Semantic[]) => data.filter(item => item.name = searchName.trim().toLowerCase()))
+      ).subscribe(
+        (response) =>  console.log(response),
+  )
+  
+}*/
 
-    //prosledim page iz event-a
-
-    
+  getData(){
+    this.semanticService.getSemantics().subscribe(
+      (results:any) => {
+        this.dataSourcePage = results;
+      }
+    )
   }
 
-  //onSortChange(sort:SortE)
+  onChangePage(event:PageEvent){
 
+    console.log(event)
+  
+    let page = event.pageIndex;
+    let pageSize = event.pageSize;
 
-  /*sortChange(sort:string){
+    console.log(page);
+    console.log(pageSize)
+   
+    this.dataService.pageChange({page,pageSize})
+  }
 
-    if(this.params.sort === sort){
-      this.params.sortDirection = 'asc' ? 'desc':'asc';
-      this.isAscendingSort= true
-      this.isAscendingSort = !this.isAscendingSort;
-    }else{
-      this.params.sort = sort;
-      this.params.sortDirection = 'asc'
-      this.isAscendingSort = false
-    }
-    this.getAll();
-  }*/
+  onChangeSort(event:Sort){
+
+    let direction = event.direction;
+    let field = event.active;
+    
+    console.log(direction);
+    console.log(field)
+
+    this.dataService.sortChange({direction, field})
+  }
+
 
  deleteSemantic(semanticId:number) {
     this.semanticService.deleteSemantic(semanticId)
@@ -67,14 +92,6 @@ export class TableComponent implements OnInit{
   //   () => this.getSemantics(),
     )
   }
-
-
-
-  /*onSortClick(sort:Sort){
-    this.dataService.sortChange(sort)
-  }
-*/
-
 
   
   backToApps(){

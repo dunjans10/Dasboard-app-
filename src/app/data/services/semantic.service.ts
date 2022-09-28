@@ -4,8 +4,15 @@ import { Observable, switchMap, tap} from 'rxjs';
 import { AuthUiService } from 'src/app/auth/shared/services/auth-ui.service';
 import { Page } from '../models/page.model';
 import { Semantic } from '../models/semantic.model';
+import { PageParams, SortParams } from './http-models/request-models';
 
 const apiUrl:string='https://integration4.wolkabout.com';
+
+export interface SemanticFilter {
+  query?: string;
+}
+
+export interface SemanticPageParams extends SemanticFilter, PageParams, SortParams {}
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +21,13 @@ export class SemanticService {
 
   constructor(private http:HttpClient, private authService:AuthUiService) { }
 
-  getSemantics(params?:any):Observable<Page<Semantic[]>>{
+  getSemantics(params?: SemanticPageParams):Observable<Page<Semantic>>{
 
-      params = {
-        params:new HttpParams()
-
-        .set('sort', params.sort ? params.sortDirection : "")
-        //.set('sortDirection', params.sortDirection || "")
-        .set('page', params?.page || "")
-        .set('size', params?.pageSize || "")
-      }
+      const queryParams = new HttpParams()
+        .set('sort', params?.field ? `${params.field},${params.direction}` : "")
+        .set('page', params?.page ?? "")
+        .set('size', params?.pageSize ?? "");
+      
 
 
     return this.authService.accessToken$.pipe(
@@ -35,7 +39,7 @@ export class SemanticService {
           Authorization: `Bearer ${accessToken}`
         })
 
-        return this.http.get<Page<Semantic[]>>(`${apiUrl}/api/semantics`, {headers, params}).pipe(
+        return this.http.get<Page<Semantic>>(`${apiUrl}/api/semantics`, {headers, params:queryParams}).pipe(
           tap(data => console.log(JSON.stringify(data)))
           )    
       })
@@ -54,6 +58,20 @@ export class SemanticService {
       })
     )
   }
+
+    /*sortChange(sort:string){
+
+    if(this.params.sort === sort){
+      this.params.sortDirection = 'asc' ? 'desc':'asc';
+      this.isAscendingSort= true
+      this.isAscendingSort = !this.isAscendingSort;
+    }else{
+      this.params.sort = sort;
+      this.params.sortDirection = 'asc'
+      this.isAscendingSort = false
+    }
+    this.getAll();
+  }*/
  
   
 }

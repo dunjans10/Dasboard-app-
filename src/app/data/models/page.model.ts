@@ -1,6 +1,6 @@
 
 export interface Page<ContentType> {
-  
+
 
   content:ContentType[];
   pageable: Pageable;

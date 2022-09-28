@@ -1,18 +1,10 @@
+import { PageParams, SortParams } from "src/app/data/services/http-models/request-models";
 
 export interface DataState {
-  sort: Sort;
-  page:Page;
+  sort: SortParams;
+  page:PageParams;
   }
 
-export interface Sort {
-    direction:string,
-    field:string
-}
-
-export interface Page {
-    page:number,
-    pageSize:number
-}
  
 export const initialState:DataState = {
     sort: {
