@@ -11,4 +11,5 @@ export const getSemanticFeatureState = createFeatureSelector<DataState>(dataTabl
 export const selectSort = createSelector(getSemanticFeatureState, (state:DataState) => state.sort);
 export const selectPage = createSelector(getSemanticFeatureState, (state:DataState) => state.page);
 export const selectFilter = createSelector(getSemanticFeatureState, (state:DataState)=> state.filter)
-
+//export const deleteSemantic = createSelector(getSemanticFeatureState, (state:DataState) => state.deleteId);
+ 

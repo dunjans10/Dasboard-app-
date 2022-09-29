@@ -9,7 +9,7 @@ export const dataTableFeatureKey = 'dataTable';
 export const dataTableReducer = createReducer<DataState>(
     initialState,
     on(DataTableActions.setSort, (state, {payload:data})=> {
-        console.log('Original state ' + JSON.stringify(state.sort))
+     
     
         return {
             ...state,
@@ -17,7 +17,7 @@ export const dataTableReducer = createReducer<DataState>(
         }
     }),
     on(DataTableActions.setPage, (state, {payload:data})=> {
-        console.log('Original state ' + JSON.stringify(state.page))
+   
     
         return {
             ...state,
@@ -25,11 +25,19 @@ export const dataTableReducer = createReducer<DataState>(
         }
     }),
     on(DataTableActions.setFilterBy,(state, {payload:data})=>{
-        console.log('Original state' + JSON.stringify(state.filter))
-
+ 
         return {
             ...state, 
             filter:data
+        }
+    }),
+    on(DataTableActions.deleteSemantic, (state) => {
+
+        return {
+            filter:{...state.filter},
+            sort:{...state.sort},
+            page:{...state.page}
+        
         }
     })
 )

@@ -93,10 +93,8 @@ export class TableComponent implements OnInit{
    }
  
  deleteSemantic(semanticId:number) {
-    this.semanticService.deleteSemantic(semanticId)
-    .subscribe(
-  //   () => this.getSemantics(),
-    )
+
+ this.dataService.deleteOneSemantic(semanticId);
   }
 
   backToApps(){
