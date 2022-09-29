@@ -1,9 +1,10 @@
 
 import { Component, OnInit} from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { combineLatest, filter, map } from 'rxjs';
+import { combineLatest, debounceTime, filter, map, Observable} from 'rxjs';
 import { Page } from 'src/app/data/models/page.model';
 import { Semantic } from 'src/app/data/models/semantic.model';
 import { SemanticService } from 'src/app/data/services/semantic.service';
@@ -22,8 +23,8 @@ export class TableComponent implements OnInit{
   dataSourcePage!:Page<Semantic>;
 
   dataSource$ = this.dataService.fetchData$;
-  pageEvent!:PageEvent;
 
+  searchForm!: FormGroup;
 
   vm$ = combineLatest([
     this.dataSource$,
@@ -37,15 +38,19 @@ export class TableComponent implements OnInit{
         )
  
 
-  constructor(private router:Router, private semanticService:SemanticService, private dataService:DataViewModel) {
+  constructor(private router:Router, private semanticService:SemanticService,
+     private dataService:DataViewModel, private fb: FormBuilder) {
 
     //this.dataSource$ = dataService.fetchData$
+    this.searchForm= this.fb.group({
+      query:''
+      })
+      this.onChanges()
    }
 
   ngOnInit(): void {
-    this.getData()
+    this.getData();  
   }
-
 
   getData(){
     this.semanticService.getSemantics().subscribe(
@@ -61,7 +66,7 @@ export class TableComponent implements OnInit{
   
     let page = event.pageIndex;
     let pageSize = event.pageSize;
-
+  
     console.log(page);
     console.log(pageSize)
    
@@ -70,7 +75,7 @@ export class TableComponent implements OnInit{
 
   onChangeSort(event:Sort){
 
-    let direction = event.direction; //'asc' | 'desc' | ''
+    let direction = event.direction;
     let field = event.active;
     
     console.log(direction);
@@ -79,17 +84,14 @@ export class TableComponent implements OnInit{
     this.dataService.sortChange({direction, field})
   }
 
-  applyFilter(event:Event){
-
-    console.log(event);
-
-    let query = (event.target as HTMLInputElement).value;
-  
-    this.dataService.filterChange({query})
-  }
-
-
-
+  onChanges():void{
+    this.searchForm.valueChanges.pipe(debounceTime(500)).subscribe(val => {
+       console.log(val);
+       this.dataService.filterChange(val)
+       
+    })
+   }
+ 
  deleteSemantic(semanticId:number) {
     this.semanticService.deleteSemantic(semanticId)
     .subscribe(
@@ -97,7 +99,6 @@ export class TableComponent implements OnInit{
     )
   }
 
-  
   backToApps(){
     this.router.navigate(['/apps'])
   }

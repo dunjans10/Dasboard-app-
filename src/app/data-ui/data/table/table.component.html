@@ -4,13 +4,14 @@
         Back to Apps</button>
         
     <h2>Unified Data Menager</h2>
-
+<form [formGroup]="searchForm">
     <mat-form-field appearance="outline">
         <mat-label>Search</mat-label>
         <mat-icon matPrefix >search</mat-icon>
-     <input matInput (keyup)="applyFilter($event)" #input>
+     <input matInput type="text" formControlName="query"/>
     </mat-form-field>
-    
+</form> 
+
     <table mat-table matSort (matSortChange)="onChangeSort($event)" [dataSource]="vm.semantics" class="mat-elevation-z8" >
       
         <ng-container matColumnDef="name">
@@ -39,18 +40,12 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-
-    <tr *matNoDataRow>
-        <td class="mat-cell" colspan="4"> The filter does not match any item in the data for
-          this text {{input.value}}
-        </td>
-      </tr>
     </table>
 
     <mat-paginator 
         [length]="dataSourcePage.totalElements"
         [pageSizeOptions]="[5, 10, 20]"
-        (page) = "pageEvent = $event; onChangePage($event)"
+        (page) = "onChangePage($event)"
         showFirstLastButtons
         aria-label="select page of semantics"
     >

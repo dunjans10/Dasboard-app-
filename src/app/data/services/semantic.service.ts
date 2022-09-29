@@ -60,19 +60,5 @@ export class SemanticService {
     )
   }
 
-    /*sortChange(sort:string){
-
-    if(this.params.sort === sort){
-      this.params.sortDirection = 'asc' ? 'desc':'asc';
-      this.isAscendingSort= true
-      this.isAscendingSort = !this.isAscendingSort;
-    }else{
-      this.params.sort = sort;
-      this.params.sortDirection = 'asc'
-      this.isAscendingSort = false
-    }
-    this.getAll();
-  }*/
- 
   
 }

@@ -13,8 +13,8 @@ export const initialState:DataState = {
         field: 'semantic.name',
     }, 
     page: {
-        page:1,
-        pageSize:5
+        page:0,
+        pageSize:10
     },
     filter:{
         query:''

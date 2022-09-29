@@ -20,7 +20,7 @@ export class DataViewModel implements OnDestroy {
   private pageSubject = new BehaviorSubject({
     page:0,
     pageSize:0,
-    length:0
+    //length:0
   });
   pageSubject$ = this.pageSubject.asObservable();
 
@@ -45,8 +45,8 @@ export class DataViewModel implements OnDestroy {
     tap(data => { 
       this.pageSubject.next({ //podaci potrebni za paginaciju backendu
         page:data.pageable.pageNumber,
-        pageSize:data.pageable.pageSize,
-        length:data.numberOfElements
+        pageSize:data.pageable.pageSize
+        //length:data.numberOfElements
       })
     },
  

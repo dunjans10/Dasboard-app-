@@ -13,6 +13,7 @@ const routes: Routes = [
 
  { path: '', component: ShellComponent ,
    children: [
+    {path:'', component:AppsComponent},
     {
     path:'apps', component:AppsComponent, 
     },
